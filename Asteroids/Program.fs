@@ -54,6 +54,7 @@ let main _ =
         // Draw triangle based on ship position
         PrimitiveType.Triangles |> GL.Begin
         let shipPos = state.Ship.Position
+        let shipRot = state.Ship.Velocity.Trajectory
         (*Note the 4. (or 4.0) for the z coordinate of the vertices is 4, instead of zero because of the specific projection. 
             For now, simply keep it and abstract out the coordinates so that you can just use X and Y, while keeping Z contstant. 
 
@@ -61,9 +62,14 @@ let main _ =
             I attempted to clean that up, but I've had no luck so far. 
          *) 
 
-        GL.Color3(1., 0., 0.); GL.Vertex3(shipPos.X + -0.1, shipPos.Y + -0.1, 4.) 
-        GL.Color3(1., 0., 0.); GL.Vertex3(shipPos.X + 0.1, shipPos.Y + -0.1, 4.)
-        GL.Color3(0.2, 0.9, 1.); GL.Vertex3(shipPos.X + 0., shipPos.Y + 0.1, 4.)
+        let tripointAngle = Math.PI * 2.0 / 3.0
+
+        // Back-left
+        GL.Color3(1., 0., 0.); GL.Vertex3(shipPos.X - 0.1 * Math.Sin(shipRot - tripointAngle), shipPos.Y + 0.1 * Math.Cos(shipRot - tripointAngle), 4.)
+        // Back-right
+        GL.Color3(1., 0., 0.); GL.Vertex3(shipPos.X - 0.1 * Math.Sin(shipRot + tripointAngle), shipPos.Y + 0.1 * Math.Cos(shipRot + tripointAngle), 4.) 
+        // Nose
+        GL.Color3(0.2, 0.9, 1.); GL.Vertex3(shipPos.X - 0.1 * Math.Sin(shipRot), shipPos.Y + 0.1 * Math.Cos(shipRot), 4.)
         GL.End()
 
         //Draw Ship Centre - Note: I've added this so you can see where the ship position is. 
@@ -105,7 +111,7 @@ let main _ =
     let moveShip(state: GameState) : unit =
         let pos = state.Ship.Position
         let vel = state.Ship.Velocity
-        let newPos = {X = pos.X + vel.Magnitude * Math.Sin(vel.Trajectory); Y = pos.Y + vel.Magnitude * Math.Cos(vel.Trajectory)}
+        let newPos = {X = pos.X - vel.Magnitude * Math.Sin(vel.Trajectory); Y = pos.Y + vel.Magnitude * Math.Cos(vel.Trajectory)}
         state.Ship.Position <- newPos
 
 
