@@ -43,11 +43,6 @@ let main _ =
         GL.MatrixMode(MatrixMode.Projection)
         GL.LoadMatrix(&projection)
 
-    let updateFrame (state :GameState) =
-        match state.Running with 
-        | Continue -> ()
-        | Stop -> game.Exit()
-
     let renderFrame (state: GameState)  =
 
         //OpenGL Stuff to set view
@@ -85,22 +80,34 @@ let main _ =
     let keyDown (args: KeyboardKeyEventArgs) =
         match args.Key with
         | Key.Escape ->  UserStateChange.EndGame
-        | Key.Up -> UserStateChange.ChangePosition {X = 0.0; Y = 0.01}
-        | Key.Down -> UserStateChange.ChangePosition {X = 0.0; Y = -0.01}
-        | Key.Right -> UserStateChange.ChangePosition {X = -0.01; Y = 0.0}
-        | Key.Left -> UserStateChange.ChangePosition {X = 0.01; Y = 0.0}
+        | Key.Up -> UserStateChange.Accelerate 0.01
+        | Key.Down -> UserStateChange.Accelerate -0.01
+        | Key.Right -> UserStateChange.RotateDirection 0.1
+        | Key.Left -> UserStateChange.RotateDirection -0.1
         | _ -> UserStateChange.NoChange
 
     let updateGameState (state: GameState)  change = 
         match change with 
-        | ChangePosition posChange-> 
+        | Accelerate acceleration -> 
             let pos = state.Ship.Position
-            let newPos = {X = pos.X + posChange.X; Y = pos.Y + posChange.Y}
-            printfn "%A" newPos // Delete this line: This is only to show bounds of coordinates. 
-            let newShip = {state.Ship with Position = newPos}
+            let vel = state.Ship.Velocity
+            let newVel = {Magnitude = vel.Magnitude + acceleration; Trajectory = vel.Trajectory}
+            let newShip = {state.Ship with Velocity = newVel}
+            {state with Ship = newShip}
+        | RotateDirection rotation ->
+            let vel = state.Ship.Velocity
+            let newVel = { Magnitude = vel.Magnitude; Trajectory = vel.Trajectory + rotation }
+            let newShip = { state.Ship with Velocity = newVel }
             {state with Ship = newShip}
         | EndGame -> {state with Running=Stop}
         | NoChange -> state
+
+    let moveShip(state: GameState) : unit =
+        let pos = state.Ship.Position
+        let vel = state.Ship.Velocity
+        let newPos = {X = pos.X + vel.Magnitude * Math.Sin(vel.Trajectory); Y = pos.Y + vel.Magnitude * Math.Cos(vel.Trajectory)}
+        state.Ship.Position <- newPos
+
 
     use loadSubscription = game.Load.Subscribe load
     use resizeSubscription = game.Resize.Subscribe resize 
@@ -114,6 +121,11 @@ let main _ =
         For a longer explaination see: https://lorgonblog.wordpress.com/2008/11/12/on-lambdas-capture-and-mutability/ 
         Also msdn reference : https://msdn.microsoft.com/en-us/library/dd233186.aspx*)
     let currentGameState = ref Domain.initialState
+
+    let updateFrame (state :GameState) =
+        match state.Running with 
+        | Continue -> moveShip(state)
+        | Stop -> game.Exit()
 
     use updateGameStateSub = 
         game.KeyDown

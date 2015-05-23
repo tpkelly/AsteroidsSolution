@@ -3,7 +3,7 @@
 open Geometry
       
 type Ship = { 
-    Position: Point
+    mutable Position: Point
     Velocity: Vector 
 }
 
@@ -20,10 +20,11 @@ type GameState = {
 //Probably a good idea to have a seperate union for state changes base on internal game events
 type UserStateChange = 
     | EndGame
-    | ChangePosition of Point 
+    | Accelerate of float
+    | RotateDirection of float
     | NoChange
 
 let initialState = { 
     Running = Continue
-    Ship = { Position = {X = 0.0; Y = 0.0;}; Velocity = {Dx = 0.0; Dy = 0.0} }
+    Ship = { Position = {X = 0.0; Y = 0.0;}; Velocity = {Magnitude = 0.0; Trajectory = 0.0} }
 }
