@@ -111,7 +111,13 @@ let main _ =
     let moveShip(state: GameState) : unit =
         let pos = state.Ship.Position
         let vel = state.Ship.Velocity
-        let newPos = {X = pos.X - vel.Magnitude * Math.Sin(vel.Trajectory); Y = pos.Y + vel.Magnitude * Math.Cos(vel.Trajectory)}
+        let mutable newXPos = pos.X - vel.Magnitude * Math.Sin(vel.Trajectory)
+        let mutable newYPos = pos.Y + vel.Magnitude * Math.Cos(vel.Trajectory)
+        if (newXPos > 2.25) then newXPos <- -2.25
+        if (newXPos < -2.25) then newXPos <- 2.25
+        if (newYPos > 1.67) then newYPos <- -1.67
+        if (newYPos < -1.67) then newYPos <- 1.67 
+        let newPos = {X = newXPos; Y = newYPos}
         state.Ship.Position <- newPos
 
 
