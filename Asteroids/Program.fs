@@ -64,10 +64,10 @@ let main _ =
         let vel = state.Ship.Velocity
         let mutable newXPos = pos.X - vel.Magnitude * Math.Sin(vel.Trajectory)
         let mutable newYPos = pos.Y + vel.Magnitude * Math.Cos(vel.Trajectory)
-        if (newXPos > 2.25) then newXPos <- -2.25
-        if (newXPos < -2.25) then newXPos <- 2.25
-        if (newYPos > 1.67) then newYPos <- -1.67
-        if (newYPos < -1.67) then newYPos <- 1.67 
+        if (newXPos > 2.0 * aspectRatio) then newXPos <- -2.0 * aspectRatio
+        if (newXPos < -2.0 * aspectRatio) then newXPos <- 2.0 * aspectRatio
+        if (newYPos > 2.0) then newYPos <- -2.0
+        if (newYPos < -2.0) then newYPos <- 2.0 
         let newPos = {X = newXPos; Y = newYPos}
         state.Ship.Position <- newPos
 

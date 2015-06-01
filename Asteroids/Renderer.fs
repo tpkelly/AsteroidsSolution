@@ -31,19 +31,20 @@ let renderFrame (state: GameState)  =
         *) 
 
     let tripointAngle = Math.PI * 2.0 / 3.0
+    let perspective = 2.
 
     // Back-left
-    GL.Color3(1., 0., 0.); GL.Vertex3(shipPos.X - 0.1 * Math.Sin(shipRot - tripointAngle), shipPos.Y + 0.1 * Math.Cos(shipRot - tripointAngle), 4.)
+    GL.Color3(1., 0., 0.); GL.Vertex3(shipPos.X - 0.1 * Math.Sin(shipRot - tripointAngle), shipPos.Y + 0.1 * Math.Cos(shipRot - tripointAngle), perspective)
     // Back-right
-    GL.Color3(1., 0., 0.); GL.Vertex3(shipPos.X - 0.1 * Math.Sin(shipRot + tripointAngle), shipPos.Y + 0.1 * Math.Cos(shipRot + tripointAngle), 4.) 
+    GL.Color3(1., 0., 0.); GL.Vertex3(shipPos.X - 0.1 * Math.Sin(shipRot + tripointAngle), shipPos.Y + 0.1 * Math.Cos(shipRot + tripointAngle), perspective) 
     // Nose
-    GL.Color3(0.2, 0.9, 1.); GL.Vertex3(shipPos.X - 0.1 * Math.Sin(shipRot), shipPos.Y + 0.1 * Math.Cos(shipRot), 4.)
+    GL.Color3(0.2, 0.9, 1.); GL.Vertex3(shipPos.X - 0.1 * Math.Sin(shipRot), shipPos.Y + 0.1 * Math.Cos(shipRot), perspective)
     GL.End()
 
     //Draw Ship Centre - Note: I've added this so you can see where the ship position is. 
     PrimitiveType.Points |> GL.Begin
 
-    GL.Color3(1., 1., 1.); GL.Vertex3(shipPos.X, shipPos.Y, 4.) 
+    GL.Color3(1., 1., 1.); GL.Vertex3(shipPos.X, shipPos.Y, perspective) 
     GL.End()
 
     // Game is double buffered
@@ -55,9 +56,11 @@ let load _ =
     GL.Enable(EnableCap.Blend)
     GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One)
 
+let aspectRatio = float game.Width / float game.Height;
+
 let resize _ = 
     //Setup of projection matrix for game
     GL.Viewport(game.ClientRectangle.X, game.ClientRectangle.Y, game.ClientRectangle.Width, game.ClientRectangle.Height)
-    let mutable projection = Matrix4.CreatePerspectiveFieldOfView(float32 (Math.PI / 4.), float32 game.Width / float32 game.Height, 0.001f, 5.0f)
+    let mutable projection = Matrix4.CreatePerspectiveFieldOfView(float32 (Math.PI / 2.), float32 aspectRatio, 1.0f, 100.0f)
     GL.MatrixMode(MatrixMode.Projection)
     GL.LoadMatrix(&projection)
