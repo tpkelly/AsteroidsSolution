@@ -3,13 +3,10 @@
 open System
 
 open OpenTK
-open OpenTK.Graphics
 open OpenTK.Graphics.OpenGL
-open OpenTK.Input
 
+open Window
 open Domain
-
-let game = new GameWindow(800, 600, GraphicsMode.Default, "Asteroids")
 
 let renderFrame (state: GameState)  =
 
@@ -55,8 +52,6 @@ let load _ =
     game.VSync <- VSyncMode.On
     GL.Enable(EnableCap.Blend)
     GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One)
-
-let aspectRatio = float game.Width / float game.Height;
 
 let resize _ = 
     //Setup of projection matrix for game
