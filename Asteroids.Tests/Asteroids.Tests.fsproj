@@ -55,9 +55,10 @@
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
     <Compile Include="FsCheckAddin.fs" />
-    <Compile Include="ExampleTests.fs" />
+    <Compile Include="DomainTests.fs" />
     <None Include="App.config" />
     <Content Include="packages.config" />
+    <Compile Include="PhysicsTests.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FsCheck">
@@ -93,6 +94,13 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Asteroids\Asteroids.fsproj">
+      <Name>Asteroids</Name>
+      <Project>{2729ef04-9ef7-4911-b2cf-ea98cf6819f1}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -22,11 +22,14 @@ let updateGameState (state: GameState)  change =
     | EndGame -> {state with Running=Stop}
     | NoChange -> state
 
+// Trajectory of 0 = north. X/Y Coordinates similar to a graph (up is +ve Y, right is +ve X)
 let moveShip(state: GameState) : unit =
     let pos = state.Ship.Position
     let vel = state.Ship.Velocity
-    let mutable newXPos = pos.X - vel.Magnitude * Math.Sin(vel.Trajectory)
+    
+    let mutable newXPos = pos.X + vel.Magnitude * Math.Sin(vel.Trajectory)
     let mutable newYPos = pos.Y + vel.Magnitude * Math.Cos(vel.Trajectory)
+
     if (newXPos > 2.0 * aspectRatio) then newXPos <- -2.0 * aspectRatio
     if (newXPos < -2.0 * aspectRatio) then newXPos <- 2.0 * aspectRatio
     if (newYPos > 2.0) then newYPos <- -2.0

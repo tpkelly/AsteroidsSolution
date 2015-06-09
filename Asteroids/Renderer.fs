@@ -31,11 +31,11 @@ let renderFrame (state: GameState)  =
     let perspective = 2.
 
     // Back-left
-    GL.Color3(1., 0., 0.); GL.Vertex3(shipPos.X - 0.1 * Math.Sin(shipRot - tripointAngle), shipPos.Y + 0.1 * Math.Cos(shipRot - tripointAngle), perspective)
+    GL.Color3(1., 0., 0.); GL.Vertex3(shipPos.X + 0.1 * Math.Sin(shipRot - tripointAngle), shipPos.Y + 0.1 * Math.Cos(shipRot - tripointAngle), perspective)
     // Back-right
-    GL.Color3(1., 0., 0.); GL.Vertex3(shipPos.X - 0.1 * Math.Sin(shipRot + tripointAngle), shipPos.Y + 0.1 * Math.Cos(shipRot + tripointAngle), perspective) 
+    GL.Color3(1., 0., 0.); GL.Vertex3(shipPos.X + 0.1 * Math.Sin(shipRot + tripointAngle), shipPos.Y + 0.1 * Math.Cos(shipRot + tripointAngle), perspective) 
     // Nose
-    GL.Color3(0.2, 0.9, 1.); GL.Vertex3(shipPos.X - 0.1 * Math.Sin(shipRot), shipPos.Y + 0.1 * Math.Cos(shipRot), perspective)
+    GL.Color3(0.2, 0.9, 1.); GL.Vertex3(shipPos.X + 0.1 * Math.Sin(shipRot), shipPos.Y + 0.1 * Math.Cos(shipRot), perspective)
     GL.End()
 
     //Draw Ship Centre - Note: I've added this so you can see where the ship position is. 

@@ -38,8 +38,8 @@ let main _ =
         | Key.Escape ->  UserStateChange.EndGame
         | Key.Up -> UserStateChange.Accelerate 0.01
         | Key.Down -> UserStateChange.Accelerate -0.01
-        | Key.Right -> UserStateChange.RotateDirection 0.1
-        | Key.Left -> UserStateChange.RotateDirection -0.1
+        | Key.Right -> UserStateChange.RotateDirection -0.1
+        | Key.Left -> UserStateChange.RotateDirection 0.1
         | _ -> UserStateChange.NoChange
 
 
