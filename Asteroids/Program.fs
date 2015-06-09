@@ -31,17 +31,29 @@ open Renderer
 [<EntryPoint>]
 let main _ = 
     
+    let accelerationPerFrame = 0.01
+    let rotationPerFrame = 0.1
+
+    // Keyboard state takes a while to set up first time, so give it a kick before we receive user input
+    ignore (Keyboard.GetState())
+
+    let keyResult (key: Key, inverseKey: Key, amount: float) : float =
+        let keyDown = Keyboard.GetState().IsKeyDown(key)
+        let inverseKeyDown = Keyboard.GetState().IsKeyDown(inverseKey)
+        if (keyDown = inverseKeyDown) then 0.0
+        else if (keyDown) then amount else -amount
+            
+
     //Handle keydownEvents and transform them into state changes 
     //Hint (To get the best behaviour, you may need to deal with key up, etc events)
-    let keyDown (args: KeyboardKeyEventArgs) =
+    let keyChange (args: KeyboardKeyEventArgs) =
         match args.Key with
         | Key.Escape ->  UserStateChange.EndGame
-        | Key.Up -> UserStateChange.Accelerate 0.01
-        | Key.Down -> UserStateChange.Accelerate -0.01
-        | Key.Right -> UserStateChange.RotateDirection -0.1
-        | Key.Left -> UserStateChange.RotateDirection 0.1
+        | Key.Up -> UserStateChange.Accelerate (keyResult(Key.Up, Key.Down, accelerationPerFrame))
+        | Key.Down -> UserStateChange.Accelerate (keyResult(Key.Down, Key.Up, -accelerationPerFrame))
+        | Key.Left -> UserStateChange.RotateDirection (keyResult(Key.Left, Key.Right, rotationPerFrame))
+        | Key.Right -> UserStateChange.RotateDirection (keyResult(Key.Right, Key.Left, -rotationPerFrame))
         | _ -> UserStateChange.NoChange
-
 
     use loadSubscription = game.Load.Subscribe load
     use resizeSubscription = game.Resize.Subscribe resize 
@@ -61,10 +73,10 @@ let main _ =
         | Continue -> moveShip(state)
         | Stop -> game.Exit()
 
-    use updateGameStateSub = 
-        game.KeyDown
-        |> Observable.map keyDown
-        |> Observable.scan updateGameState Domain.initialState 
+    use updateGameStateKeyDownSub = 
+        Event.merge game.KeyDown game.KeyUp
+        |> Observable.map keyChange
+        |> Observable.scan updateGameState Domain.initialState
         |> Observable.subscribe (fun state -> currentGameState := state)
 
     use renderFrameSub = 
@@ -75,6 +87,6 @@ let main _ =
         game.UpdateFrame
         |> Observable.subscribe(fun _ -> updateFrame !currentGameState)
         
-    game.Run(60.0)
+    game.Run(30.0)
 
     0 

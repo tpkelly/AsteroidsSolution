@@ -3,8 +3,9 @@
 open Geometry
       
 type Ship = { 
-    mutable Position: Point
-    Velocity: Vector 
+    Position: Point
+    Velocity: Vector
+    Delta: Vector
 }
 
 type GameRunning =
@@ -13,7 +14,7 @@ type GameRunning =
 
 type GameState = {
     Running : GameRunning
-    Ship : Ship
+    mutable Ship : Ship
 }
 
 //For state changes based on user events. 
@@ -26,5 +27,9 @@ type UserStateChange =
 
 let initialState = { 
     Running = Continue
-    Ship = { Position = {X = 0.0; Y = 0.0;}; Velocity = {Magnitude = 0.0; Trajectory = 0.0} }
+    Ship = {
+        Position = {X = 0.0; Y = 0.0;};
+        Velocity = {Magnitude = 0.0; Trajectory = 0.0};
+        Delta = { Magnitude = 0.0; Trajectory = 0.0; }
+    }
 }
