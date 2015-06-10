@@ -8,18 +8,13 @@ open OpenTK.Graphics.OpenGL
 open Window
 open Domain
 
-let renderFrame (state: GameState)  =
+let perspective = 2.
 
-    //OpenGL Stuff to set view
-    GL.Clear(ClearBufferMask.ColorBufferBit ||| ClearBufferMask.DepthBufferBit)
-    let mutable modelview = Matrix4.LookAt(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY)
-    GL.MatrixMode(MatrixMode.Modelview)
-    GL.LoadMatrix(&modelview)
-
+let renderShip (ship: Ship) =
     // Draw triangle based on ship position
     PrimitiveType.Triangles |> GL.Begin
-    let shipPos = state.Ship.Position
-    let shipRot = state.Ship.Velocity.Trajectory
+    let shipPos = ship.Position
+    let shipRot = ship.Velocity.Trajectory
     (*Note the 4. (or 4.0) for the z coordinate of the vertices is 4, instead of zero because of the specific projection. 
         For now, simply keep it and abstract out the coordinates so that you can just use X and Y, while keeping Z contstant. 
 
@@ -28,7 +23,6 @@ let renderFrame (state: GameState)  =
         *) 
 
     let tripointAngle = Math.PI * 2.0 / 3.0
-    let perspective = 2.
 
     // Back-left
     GL.Color3(1., 0., 0.); GL.Vertex3(shipPos.X + 0.1 * Math.Sin(shipRot - tripointAngle), shipPos.Y + 0.1 * Math.Cos(shipRot - tripointAngle), perspective)
@@ -43,6 +37,36 @@ let renderFrame (state: GameState)  =
 
     GL.Color3(1., 1., 1.); GL.Vertex3(shipPos.X, shipPos.Y, perspective) 
     GL.End()
+
+let renderAsteroid (asteroid: Asteroid) =
+    PrimitiveType.Polygon |> GL.Begin
+    let position = asteroid.Position
+    let rotation = asteroid.Velocity.Trajectory
+
+    // Back-left
+    GL.Color3(0.5, 0.5, 0.5)
+    let mutable i = 0
+    let perAngle = Math.PI * 2.0 / (float asteroid.Nodes.Length)
+    while (i < asteroid.Nodes.Length) do
+        let vertexMagnitude = asteroid.Nodes.Item i
+        GL.Vertex3(position.X + vertexMagnitude * Math.Sin(rotation + (float i) * perAngle),
+                   position.Y + vertexMagnitude * Math.Cos(rotation + (float i) * perAngle),
+                   perspective)
+        i <- i + 1
+    GL.End()
+
+let renderFrame (state: GameState)  =
+
+    //OpenGL Stuff to set view
+    GL.Clear(ClearBufferMask.ColorBufferBit ||| ClearBufferMask.DepthBufferBit)
+    let mutable modelview = Matrix4.LookAt(Vector3.Zero, Vector3.UnitZ, Vector3.UnitY)
+    GL.MatrixMode(MatrixMode.Modelview)
+    GL.LoadMatrix(&modelview)
+
+    renderShip state.Ship
+
+    for asteroid in state.Asteroids do
+        renderAsteroid asteroid
 
     // Game is double buffered
     game.SwapBuffers()

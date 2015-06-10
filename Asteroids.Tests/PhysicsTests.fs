@@ -10,8 +10,8 @@ open Physics
 [<Test>]
 let ``NoChange leaves the ship as is``() = 
     // Given
-    let dummyShip = { Position = {X = 0.5; Y = 0.5;}; Velocity = {Magnitude = 0.3; Trajectory = 1.2} }
-    let dummyState = { Ship = dummyShip; Running = Continue }
+    let dummyShip = { Position = {X = 0.5; Y = 0.5;}; Velocity = {Magnitude = 0.3; Trajectory = 1.2}; Delta = { Magnitude = 0.0; Trajectory = 0.0 } }
+    let dummyState = { Ship = dummyShip; Running = Continue; Asteroids = [] }
     let change = NoChange
     
     // When
@@ -27,8 +27,8 @@ let ``NoChange leaves the ship as is``() =
 [<Test>]
 let ``EndGame stops the game`` () =
     // Given
-    let dummyShip = { Position = {X = 0.5; Y = 0.5;}; Velocity = {Magnitude = 0.3; Trajectory = 1.2} }
-    let dummyState = { Ship = dummyShip; Running = Continue }
+    let dummyShip = { Position = {X = 0.5; Y = 0.5;}; Velocity = {Magnitude = 0.3; Trajectory = 1.2}; Delta = { Magnitude = 0.0; Trajectory = 0.0 }}
+    let dummyState = { Ship = dummyShip; Running = Continue; Asteroids = [] }
     let change = EndGame
     
     // When
@@ -40,8 +40,8 @@ let ``EndGame stops the game`` () =
 [<Test>]
 let ``Accelerate increases the velocity of the ship in the same direction`` () =
     // Given
-    let dummyShip = { Position = {X = 0.5; Y = 0.5;}; Velocity = {Magnitude = 0.3; Trajectory = 1.2} }
-    let dummyState = { Ship = dummyShip; Running = Continue }
+    let dummyShip = { Position = {X = 0.5; Y = 0.5;}; Velocity = {Magnitude = 0.3; Trajectory = 1.2}; Delta = { Magnitude = 0.0; Trajectory = 0.0 }  }
+    let dummyState = { Ship = dummyShip; Running = Continue; Asteroids = [] }
     let change = Accelerate 0.05
     
     // When
@@ -57,8 +57,8 @@ let ``Accelerate increases the velocity of the ship in the same direction`` () =
 [<Test>]
 let ``Negative acceleration slows the ship enough to go in reverse in the opposite direction`` () =
     // Given
-    let dummyShip = { Position = {X = 0.5; Y = 0.5;}; Velocity = {Magnitude = 0.3; Trajectory = 1.2} }
-    let dummyState = { Ship = dummyShip; Running = Continue }
+    let dummyShip = { Position = {X = 0.5; Y = 0.5;}; Velocity = {Magnitude = 0.3; Trajectory = 1.2}; Delta = { Magnitude = 0.0; Trajectory = 0.0 }  }
+    let dummyState = { Ship = dummyShip; Running = Continue; Asteroids = [] }
     let change = Accelerate -0.5
     
     // When
@@ -74,8 +74,8 @@ let ``Negative acceleration slows the ship enough to go in reverse in the opposi
 [<Test>]
 let ``Positive rotation turns the ship to the right`` () =
     // Given
-    let dummyShip = { Position = {X = 0.5; Y = 0.5;}; Velocity = {Magnitude = 0.3; Trajectory = 1.2} }
-    let dummyState = { Ship = dummyShip; Running = Continue }
+    let dummyShip = { Position = {X = 0.5; Y = 0.5;}; Velocity = {Magnitude = 0.3; Trajectory = 1.2}; Delta = { Magnitude = 0.0; Trajectory = 0.0 }  }
+    let dummyState = { Ship = dummyShip; Running = Continue; Asteroids = [] }
     let change = RotateDirection 0.1
     
     // When
@@ -91,8 +91,8 @@ let ``Positive rotation turns the ship to the right`` () =
 [<Test>]
 let ``Negative rotation turns the ship to the right`` () =
     // Given
-    let dummyShip = { Position = {X = 0.5; Y = 0.5;}; Velocity = {Magnitude = 0.3; Trajectory = 1.0} }
-    let dummyState = { Ship = dummyShip; Running = Continue }
+    let dummyShip = { Position = {X = 0.5; Y = 0.5;}; Velocity = {Magnitude = 0.3; Trajectory = 1.0}; Delta = { Magnitude = 0.0; Trajectory = 0.0 }  }
+    let dummyState = { Ship = dummyShip; Running = Continue; Asteroids = [] }
     let change = RotateDirection -10.0
     
     // When
@@ -108,8 +108,8 @@ let ``Negative rotation turns the ship to the right`` () =
 [<Test>]
 let ``Moving the ship continues the game`` () =
     // Given
-    let dummyShip = { Position = {X = 0.0; Y = 0.0;}; Velocity = {Magnitude = 0.5; Trajectory = 0.0 } }
-    let dummyState = { Ship = dummyShip; Running = Continue }
+    let dummyShip = { Position = {X = 0.0; Y = 0.0;}; Velocity = {Magnitude = 0.5; Trajectory = 0.0 }; Delta = { Magnitude = 0.0; Trajectory = 0.0 }  }
+    let dummyState = { Ship = dummyShip; Running = Continue; Asteroids = [] }
     
     // When
     moveShip dummyState
@@ -120,8 +120,8 @@ let ``Moving the ship continues the game`` () =
 [<Test>]
 let ``Moving the ship foes not change the velocity`` () =
     // Given
-    let dummyShip = { Position = {X = 0.0; Y = 0.0;}; Velocity = {Magnitude = 0.5; Trajectory = Math.PI / 3.0 } }
-    let dummyState = { Ship = dummyShip; Running = Continue }
+    let dummyShip = { Position = {X = 0.0; Y = 0.0;}; Velocity = {Magnitude = 0.5; Trajectory = Math.PI / 3.0 }; Delta = { Magnitude = 0.0; Trajectory = 0.0 }  }
+    let dummyState = { Ship = dummyShip; Running = Continue; Asteroids = [] }
     
     // When
     moveShip dummyState
@@ -133,8 +133,8 @@ let ``Moving the ship foes not change the velocity`` () =
 [<Test>]
 let ``Updating initial positions moves the ship`` () =
     // Given
-    let dummyShip = { Position = {X = 0.0; Y = 0.0;}; Velocity = {Magnitude = 0.5; Trajectory = 0.0 } }
-    let dummyState = { Ship = dummyShip; Running = Continue }
+    let dummyShip = { Position = {X = 0.0; Y = 0.0;}; Velocity = {Magnitude = 0.5; Trajectory = 0.0 }; Delta = { Magnitude = 0.0; Trajectory = 0.0 }  }
+    let dummyState = { Ship = dummyShip; Running = Continue; Asteroids = [] }
     
     // When
     moveShip dummyState
@@ -146,8 +146,8 @@ let ``Updating initial positions moves the ship`` () =
 [<Test>]
 let ``Updating positions moves the ship`` () =
     // Given
-    let dummyShip = { Position = {X = 0.5; Y = 0.5;}; Velocity = {Magnitude = 0.5; Trajectory = Math.PI / 2.0} }
-    let dummyState = { Ship = dummyShip; Running = Continue }
+    let dummyShip = { Position = {X = 0.5; Y = 0.5;}; Velocity = {Magnitude = 0.5; Trajectory = Math.PI / 2.0}; Delta = { Magnitude = 0.0; Trajectory = 0.0 }  }
+    let dummyState = { Ship = dummyShip; Running = Continue; Asteroids = [] }
     
     // When
     moveShip dummyState
@@ -159,8 +159,8 @@ let ``Updating positions moves the ship`` () =
 [<Test>]
 let ``Updating positions with ship in reverse moves the ship backwards`` () =
     // Given
-    let dummyShip = { Position = {X = 1.0; Y = 1.0;}; Velocity = {Magnitude = -2.0; Trajectory = Math.PI / 4.0} }
-    let dummyState = { Ship = dummyShip; Running = Continue }
+    let dummyShip = { Position = {X = 1.0; Y = 1.0;}; Velocity = {Magnitude = -2.0; Trajectory = Math.PI / 4.0}; Delta = { Magnitude = 0.0; Trajectory = 0.0 }  }
+    let dummyState = { Ship = dummyShip; Running = Continue; Asteroids = [] }
     
     // When
     moveShip dummyState
@@ -172,8 +172,8 @@ let ``Updating positions with ship in reverse moves the ship backwards`` () =
 [<Test>]
 let ``Updating positions wraps the ship around X positively`` () =
     // Given
-    let dummyShip = { Position = {X = 2.0 * aspectRatio - 0.1; Y = 1.0;}; Velocity = {Magnitude = 0.2; Trajectory = Math.PI / 2.0} }
-    let dummyState = { Ship = dummyShip; Running = Continue }
+    let dummyShip = { Position = {X = 2.0 * aspectRatio - 0.1; Y = 1.0;}; Velocity = {Magnitude = 0.2; Trajectory = Math.PI / 2.0}; Delta = { Magnitude = 0.0; Trajectory = 0.0 }  }
+    let dummyState = { Ship = dummyShip; Running = Continue; Asteroids = [] }
     
     // When
     moveShip dummyState
@@ -185,8 +185,8 @@ let ``Updating positions wraps the ship around X positively`` () =
 [<Test>]
 let ``Updating positions wraps the ship around X negatively`` () =
     // Given
-    let dummyShip = { Position = {X = -2.0 * aspectRatio + 0.1; Y = 1.0;}; Velocity = {Magnitude = -0.2; Trajectory = Math.PI / 2.0} }
-    let dummyState = { Ship = dummyShip; Running = Continue }
+    let dummyShip = { Position = {X = -2.0 * aspectRatio + 0.1; Y = 1.0;}; Velocity = {Magnitude = -0.2; Trajectory = Math.PI / 2.0}; Delta = { Magnitude = 0.0; Trajectory = 0.0 }  }
+    let dummyState = { Ship = dummyShip; Running = Continue; Asteroids = [] }
     
     // When
     moveShip dummyState
@@ -198,8 +198,8 @@ let ``Updating positions wraps the ship around X negatively`` () =
 [<Test>]
 let ``Updating positions wraps the ship around Y positively`` () =
     // Given
-    let dummyShip = { Position = {X = 1.0; Y = 1.9;}; Velocity = {Magnitude = 0.2; Trajectory = 0.0 } }
-    let dummyState = { Ship = dummyShip; Running = Continue }
+    let dummyShip = { Position = {X = 1.0; Y = 1.9;}; Velocity = {Magnitude = 0.2; Trajectory = 0.0 }; Delta = { Magnitude = 0.0; Trajectory = 0.0 }  }
+    let dummyState = { Ship = dummyShip; Running = Continue; Asteroids = [] }
     
     // When
     moveShip dummyState
@@ -211,8 +211,8 @@ let ``Updating positions wraps the ship around Y positively`` () =
 [<Test>]
 let ``Updating positions wraps the ship around Y negatively`` () =
     // Given
-    let dummyShip = { Position = {X = 1.0; Y = -1.9;}; Velocity = {Magnitude = -0.2; Trajectory = 0.0 } }
-    let dummyState = { Ship = dummyShip; Running = Continue }
+    let dummyShip = { Position = {X = 1.0; Y = -1.9;}; Velocity = {Magnitude = -0.2; Trajectory = 0.0 }; Delta = { Magnitude = 0.0; Trajectory = 0.0 }  }
+    let dummyState = { Ship = dummyShip; Running = Continue; Asteroids = [] }
     
     // When
     moveShip dummyState

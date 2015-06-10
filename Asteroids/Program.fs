@@ -70,7 +70,7 @@ let main _ =
 
     let updateFrame (state :GameState) =
         match state.Running with 
-        | Continue -> moveShip(state)
+        | Continue -> state.Ship <- moveShip(state)
         | Stop -> game.Exit()
 
     use updateGameStateKeyDownSub = 
@@ -85,7 +85,7 @@ let main _ =
 
     use updateFrameSub = 
         game.UpdateFrame
-        |> Observable.subscribe(fun _ -> updateFrame !currentGameState)
+        |> Observable.subscribe(fun _ -> updateFrame !currentGameState )
         
     game.Run(30.0)
 

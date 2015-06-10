@@ -20,7 +20,7 @@ let updateGameState (state: GameState)  change =
     | NoChange -> state
 
 // Trajectory of 0 = north. X/Y Coordinates similar to a graph (up is +ve Y, right is +ve X)
-let moveShip(state: GameState) : unit =
+let moveShip(state: GameState) : Ship =
     let pos = state.Ship.Position
     let vel = state.Ship.Velocity
     let delta = state.Ship.Delta
@@ -34,6 +34,5 @@ let moveShip(state: GameState) : unit =
     if (newYPos > 2.0) then newYPos <- -2.0
     if (newYPos < -2.0) then newYPos <- 2.0 
     let newPos = {X = newXPos; Y = newYPos}
-    let newShip = { Position = newPos; Delta = delta; Velocity = newVel }
-    state.Ship <- newShip
+    { Position = newPos; Delta = delta; Velocity = newVel }
 

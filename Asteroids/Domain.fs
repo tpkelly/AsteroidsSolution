@@ -1,8 +1,15 @@
 ﻿module Domain
 
 open Geometry
-      
-type Ship = { 
+open System
+
+type Asteroid = {
+    Position: Point
+    Velocity: Vector
+    Nodes: List<float>
+}
+
+type Ship = {
     Position: Point
     Velocity: Vector
     Delta: Vector
@@ -15,6 +22,7 @@ type GameRunning =
 type GameState = {
     Running : GameRunning
     mutable Ship : Ship
+    mutable Asteroids : List<Asteroid>
 }
 
 //For state changes based on user events. 
@@ -25,6 +33,15 @@ type UserStateChange =
     | RotateDirection of float
     | NoChange
 
+let Rand = Random();
+
+let generateAsteroid numberOfVertices =
+    let pos = { X = 1.0; Y = 1.0 }
+    let vel = { Magnitude = 0.0; Trajectory = 0.0 }
+    let nodes = [ for i in 1..numberOfVertices -> 0.2 + Rand.NextDouble() / 4.0] // 0.2 to 0.45
+    { Position = pos; Velocity = vel; Nodes = nodes}
+
+
 let initialState = { 
     Running = Continue
     Ship = {
@@ -32,4 +49,5 @@ let initialState = {
         Velocity = {Magnitude = 0.0; Trajectory = 0.0};
         Delta = { Magnitude = 0.0; Trajectory = 0.0; }
     }
+    Asteroids = [ generateAsteroid 8 ]
 }
