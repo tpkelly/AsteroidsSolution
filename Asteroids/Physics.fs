@@ -19,6 +19,16 @@ let updateGameState (state: GameState)  change =
     | EndGame -> {state with Running=Stop}
     | NoChange -> state
 
+let updatedPosition(position: Point, velocity: Vector) : Point =
+    let mutable newXPos = position.X + velocity.Magnitude * Math.Sin(velocity.Trajectory)
+    let mutable newYPos = position.Y + velocity.Magnitude * Math.Cos(velocity.Trajectory)
+
+    if (newXPos > 2.0 * aspectRatio) then newXPos <- -2.0 * aspectRatio
+    if (newXPos < -2.0 * aspectRatio) then newXPos <- 2.0 * aspectRatio
+    if (newYPos > 2.0) then newYPos <- -2.0
+    if (newYPos < -2.0) then newYPos <- 2.0 
+    {X = newXPos; Y = newYPos}
+
 // Trajectory of 0 = north. X/Y Coordinates similar to a graph (up is +ve Y, right is +ve X)
 let moveShip(state: GameState) : Ship =
     let pos = state.Ship.Position
@@ -26,13 +36,11 @@ let moveShip(state: GameState) : Ship =
     let delta = state.Ship.Delta
     let newVel = { Magnitude = vel.Magnitude + delta.Magnitude; Trajectory = vel.Trajectory + delta.Trajectory }
     
-    let mutable newXPos = pos.X + newVel.Magnitude * Math.Sin(newVel.Trajectory)
-    let mutable newYPos = pos.Y + newVel.Magnitude * Math.Cos(newVel.Trajectory)
-
-    if (newXPos > 2.0 * aspectRatio) then newXPos <- -2.0 * aspectRatio
-    if (newXPos < -2.0 * aspectRatio) then newXPos <- 2.0 * aspectRatio
-    if (newYPos > 2.0) then newYPos <- -2.0
-    if (newYPos < -2.0) then newYPos <- 2.0 
-    let newPos = {X = newXPos; Y = newYPos}
+    let newPos = updatedPosition(pos, newVel)
     { Position = newPos; Delta = delta; Velocity = newVel }
 
+let moveAsteroids(state: GameState) : List<Asteroid> =
+    state.Asteroids |> List.map (fun a ->
+        let newPos = updatedPosition(a.Position, a.Velocity)
+        { Position = newPos; Velocity = a.Velocity; Nodes = a.Nodes }
+    )

@@ -36,8 +36,11 @@ type UserStateChange =
 let Rand = Random();
 
 let generateAsteroid numberOfVertices =
-    let pos = { X = 1.0; Y = 1.0 }
-    let vel = { Magnitude = 0.0; Trajectory = 0.0 }
+    let pos = {
+        X = if (Rand.Next() % 2 = 0) then (Rand.NextDouble() + 1.0) / 2.0 else (Rand.NextDouble() - 2.0) / 2.0;
+        Y = if (Rand.Next() % 2 = 0) then (Rand.NextDouble() + 1.0) / 2.0 else (Rand.NextDouble() - 2.0) / 2.0;
+    }
+    let vel = { Magnitude = Rand.NextDouble() / 20.0; Trajectory = Math.PI * 2.0 * Rand.NextDouble() }
     let nodes = [ for i in 1..numberOfVertices -> 0.2 + Rand.NextDouble() / 4.0] // 0.2 to 0.45
     { Position = pos; Velocity = vel; Nodes = nodes}
 
@@ -49,5 +52,5 @@ let initialState = {
         Velocity = {Magnitude = 0.0; Trajectory = 0.0};
         Delta = { Magnitude = 0.0; Trajectory = 0.0; }
     }
-    Asteroids = [ generateAsteroid 8 ]
+    Asteroids = [ for i in 1..10 -> generateAsteroid (Rand.Next() % 8 + 4) ]
 }

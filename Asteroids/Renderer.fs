@@ -74,8 +74,6 @@ let renderFrame (state: GameState)  =
 let load _ =
     // Some game and OpenGL Setup
     game.VSync <- VSyncMode.On
-    GL.Enable(EnableCap.Blend)
-    GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One)
 
 let resize _ = 
     //Setup of projection matrix for game
