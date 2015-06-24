@@ -34,7 +34,8 @@ let moveShip(state: GameState) : Ship =
     let pos = state.Ship.Position
     let vel = state.Ship.Velocity
     let delta = state.Ship.Delta
-    let newVel = { Magnitude = vel.Magnitude + delta.Magnitude; Trajectory = vel.Trajectory + delta.Trajectory }
+    let newMagnitude = Math.Max(Math.Min(vel.Magnitude + delta.Magnitude, 0.15), -0.1)
+    let newVel = { Magnitude = newMagnitude; Trajectory = vel.Trajectory + delta.Trajectory }
     
     let newPos = updatedPosition(pos, newVel)
     { Position = newPos; Delta = delta; Velocity = newVel }
