@@ -45,3 +45,27 @@ let moveAsteroids(state: GameState) : List<Asteroid> =
         let newPos = updatedPosition(a.Position, a.Velocity)
         { Position = newPos; Velocity = a.Velocity; Nodes = a.Nodes }
     )
+
+let objectsCollided(position1 : Point)(position2 : Point)(radius1 : float)(radius2: float) : bool =
+    let xDiff = position1.X - position2.X;
+    let yDiff = position1.Y - position2.Y;
+    xDiff * xDiff + yDiff * yDiff < (radius1 + radius2) * (radius1 + radius2)
+
+let detectCollisions(state: GameState) =
+    let allObjects = List.concat
+    let asteroidRadius = 0.45
+    let shipRadius = 0.1
+    for a in state.Asteroids do
+        if (objectsCollided a.Position state.Ship.Position asteroidRadius shipRadius) then printfn "Ship collision"
+    
+    for i in 0..state.Asteroids.Length-2 do
+        let a = state.Asteroids.Item i
+        for j in i+1..state.Asteroids.Length-1 do
+            let b = state.Asteroids.Item j
+            if (objectsCollided b.Position state.Ship.Position asteroidRadius asteroidRadius) then printfn "Asteroid collision (%d + %d)" i j
+
+
+let moveObjects(state: GameState) =
+    state.Ship <- moveShip state
+    state.Asteroids <- moveAsteroids state
+    detectCollisions state

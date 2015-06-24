@@ -70,8 +70,7 @@ let main _ =
 
     let updateFrame (state :GameState) =
         match state.Running with 
-        | Continue -> state.Ship <- moveShip(state)
-                      state.Asteroids <- moveAsteroids(state)
+        | Continue -> moveObjects state
         | Stop -> game.Exit()
 
     use updateGameStateKeyDownSub = 
