@@ -49,8 +49,8 @@ let renderAsteroid (asteroid: Asteroid) =
     let perAngle = Math.PI * 2.0 / (float asteroid.Nodes.Length)
     while (i < asteroid.Nodes.Length) do
         let vertexMagnitude = asteroid.Nodes.Item i
-        GL.Vertex3(position.X + vertexMagnitude * Math.Sin(rotation + (float i) * perAngle),
-                   position.Y + vertexMagnitude * Math.Cos(rotation + (float i) * perAngle),
+        GL.Vertex3(position.X + vertexMagnitude * Math.Sin((float i) * perAngle),
+                   position.Y + vertexMagnitude * Math.Cos((float i) * perAngle),
                    perspective)
         i <- i + 1
     GL.End()

@@ -4,8 +4,8 @@ open Geometry
 open System
 
 type Asteroid = {
-    Position: Point
-    Velocity: Vector
+    mutable Position: Point
+    mutable Velocity: Vector
     Nodes: List<float>
 }
 
@@ -34,14 +34,16 @@ type UserStateChange =
     | NoChange
 
 let Rand = Random();
+let asteroidMinRadius = 0.1
+let asteroidRadius = 0.2
 
 let generateAsteroid numberOfVertices =
     let pos = {
-        X = if (Rand.Next() % 2 = 0) then (Rand.NextDouble() + 1.0) / 2.0 else (Rand.NextDouble() - 2.0) / 2.0;
-        Y = if (Rand.Next() % 2 = 0) then (Rand.NextDouble() + 1.0) / 2.0 else (Rand.NextDouble() - 2.0) / 2.0;
+        X = if (Rand.Next() % 2 = 0) then (Rand.NextDouble() + 1.0) else (Rand.NextDouble() - 2.0);
+        Y = if (Rand.Next() % 2 = 0) then (Rand.NextDouble() + 1.0) else (Rand.NextDouble() - 2.0);
     }
-    let vel = { Magnitude = Rand.NextDouble() / 20.0; Trajectory = Math.PI * 2.0 * Rand.NextDouble() }
-    let nodes = [ for i in 1..numberOfVertices -> 0.2 + Rand.NextDouble() / 4.0] // 0.2 to 0.45
+    let vel = { Magnitude = Rand.NextDouble() * 0.05; Trajectory = Math.PI * 2.0 * Rand.NextDouble() }
+    let nodes = [ for i in 1..numberOfVertices -> asteroidMinRadius + Rand.NextDouble() * (asteroidRadius - asteroidMinRadius)]
     { Position = pos; Velocity = vel; Nodes = nodes}
 
 
@@ -52,5 +54,5 @@ let initialState = {
         Velocity = {Magnitude = 0.0; Trajectory = 0.0};
         Delta = { Magnitude = 0.0; Trajectory = 0.0; }
     }
-    Asteroids = [ for i in 1..10 -> generateAsteroid (Rand.Next() % 8 + 4) ]
+    Asteroids = [ for i in 1..20 -> generateAsteroid (Rand.Next() % 8 + 6) ]
 }
